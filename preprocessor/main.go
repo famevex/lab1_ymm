@@ -30,8 +30,7 @@ func checkUnclosedComments(source string) error {
 	return nil
 }
 
-// protectStrings заменяет строковые литералы на плейсхолдеры,
-// чтобы комментарии внутри строк не удалялись
+// protectStrings заменяет строковые литералы на плейсхолдеры, чтобы комментарии внутри строк не удалялись
 func protectStrings(source string) (string, []string) {
 	var strings_ []string
 	var result strings.Builder
@@ -129,6 +128,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(result)
+	err = os.WriteFile("cleaned.cpp", []byte(result+"\n"), 0644)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка записи файла: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintln(os.Stderr, "Очистка завершена. Результат записан в cleaned.cpp")
 	fmt.Fprintln(os.Stderr, "Ошибок не выявлено.")
 }

@@ -55,6 +55,17 @@ var delimiters = map[rune]bool{
 	';': true, ',': true, ':': true, '#': true,
 }
 
+var identifiers = map[string]bool{
+    // Функции
+    "add": true, "main": true,
+    // Переменные
+    "x": true, "y": true, "result": true, "product": true,
+    "diff": true, "isPositive": true, "count": true, "i": true,
+    "a": true, "b": true, "s": true,
+    // Стандартная библиотека C++
+    "cout": true, "endl": true, "cin": true,
+}
+
 func lexError(msg string, line int) {
 	fmt.Fprintf(os.Stderr, "Лексическая ошибка на строке %d: %s\n", line, msg)
 	os.Exit(1)
@@ -148,6 +159,10 @@ func tokenize(source string) []Token {
 				ttype = CONSTANT_BOOL
 			} else if keywords[word] {
 				ttype = KEYWORD
+			} else if identifiers[word] {
+				ttype = IDENTIFIER
+			} else {
+				lexError(fmt.Sprintf("неизвестный идентификатор: '%s'", word), line)
 			}
 			tokens = append(tokens, Token{ttype, word, line})
 			continue
